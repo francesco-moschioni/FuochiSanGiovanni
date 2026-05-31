@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Fuochi di San Giovanni</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Shake anche per input admin */
+    input.shake { animation: shake .4s ease; border-color: var(--danger) !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Overlay autenticazione ── -->
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-box">
+      <div style="font-size:2rem;margin-bottom:.5rem;">🔒</div>
+      <h2>Area Admin</h2>
+      <p>Inserisci la password per accedere alla dashboard.</p>
+      <input
+        type="password"
+        id="admin-password"
+        placeholder="Password"
+        autocomplete="current-password"
+      />
+      <button id="login-btn" class="btn-primary">Accedi</button>
+      <p id="login-error" class="auth-error hidden">Password errata. Riprova.</p>
+    </div>
+  </div>
+
+  <!-- ── Contenuto admin (nascosto fino all'autenticazione) ── -->
+  <div id="admin-content" class="hidden">
+
+    <!-- Header admin -->
+    <div class="admin-header">
+      <h1>🔥 Fuochi di San Giovanni &mdash; Admin</h1>
+      <div class="admin-actions">
+        <button id="refresh-btn"    class="btn-secondary">↻ Aggiorna</button>
+        <button id="add-item-btn"   class="btn-success">+ Aggiungi elemento</button>
+        <button id="export-csv-btn" class="btn-secondary">⬇ Esporta CSV</button>
+      </div>
+    </div>
+
+    <div class="admin-container">
+
+      <!-- Statistiche rapide -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="stat-items">—</div>
+          <div class="stat-label">Elementi attivi</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-covered">—</div>
+          <div class="stat-label">Già coperti</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-guests">—</div>
+          <div class="stat-label">Ospiti iscritti</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-total">—</div>
+          <div class="stat-label">Iscrizioni totali</div>
+        </div>
+      </div>
+
+      <!-- Tabella elementi -->
+      <div class="table-wrap">
+        <div class="table-head">
+          <h2>Elementi</h2>
+          <span style="font-size:.8rem;color:var(--text-muted);">Aggiornamento automatico ogni 30s</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Elemento</th>
+                <th>Descrizione</th>
+                <th class="center">Quantità</th>
+                <th>Chi porta</th>
+                <th class="center">Stato</th>
+                <th class="center">Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="items-table-body">
+              <tr><td colspan="6" class="muted">Caricamento&hellip;</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Lista ospiti -->
+      <div class="table-wrap">
+        <div class="table-head">
+          <h2>Ospiti</h2>
+        </div>
+        <div id="guest-list">
+          <p class="muted">Caricamento&hellip;</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Modal aggiungi/modifica elemento ── -->
+  <div id="item-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <h2 id="modal-title">Aggiungi elemento</h2>
+      <form id="item-form">
+        <div class="form-group">
+          <label for="item-name">Nome *</label>
+          <input
+            type="text"
+            id="item-name"
+            placeholder="es. Bottiglia di vino"
+            required
+            maxlength="120"
+          />
+        </div>
+        <div class="form-group">
+          <label for="item-description">Descrizione (opzionale)</label>
+          <textarea
+            id="item-description"
+            placeholder="es. Preferibilmente bianco o rosé"
+            rows="2"
+            maxlength="300"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="item-quantity">Quantità necessaria *</label>
+          <input
+            type="number"
+            id="item-quantity"
+            min="1"
+            max="999"
+            value="1"
+            required
+          />
+          <p style="font-size:.8rem;color:var(--text-muted);margin-top:.35rem;">
+            Quando raggiunge questa quantità, l'elemento sparisce dalla lista ospiti.
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="modal-cancel" class="btn-outline">Annulla</button>
+          <button type="submit" class="btn-primary">Salva</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

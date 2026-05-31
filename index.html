@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fuochi di San Giovanni — Isola Comacina</title>
+  <meta name="description" content="Cosa porti alla festa dei Fuochi di San Giovanni sull'Isola Comacina?" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Progress bar — piccolo extra non nel foglio principale */
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      margin-top: .75rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--blue-mid);
+      border-radius: 99px;
+      transition: width .4s ease;
+    }
+    .progress-fill.full { background: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="flame-icon">🔥</div>
+        <h1>Fuochi di San Giovanni</h1>
+        <p class="subtitle">Isola Comacina &middot; 24 Giugno</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main ── -->
+  <main class="container">
+
+    <!-- Inserimento nome -->
+    <section id="name-section" class="card">
+      <h2>Chi sei?</h2>
+      <p style="color:var(--text-muted);margin-top:.25rem;">
+        Inserisci il tuo nome per vedere cosa puoi portare alla festa.
+      </p>
+      <div class="name-form">
+        <input
+          type="text"
+          id="guest-name"
+          placeholder="Il tuo nome e cognome"
+          autocomplete="name"
+          maxlength="80"
+        />
+        <button id="confirm-name-btn" class="btn-primary">Continua &rarr;</button>
+      </div>
+    </section>
+
+    <!-- Lista elementi (nascosta finché non si inserisce il nome) -->
+    <section id="items-section" class="hidden">
+
+      <div class="welcome-banner">
+        <span>Ciao, <strong id="display-name"></strong>! Seleziona cosa vuoi portare.</span>
+        <button id="change-name-btn" class="btn-link">Cambia nome</button>
+      </div>
+
+      <!-- Spinner di caricamento -->
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Caricamento in corso&hellip;</p>
+      </div>
+
+      <!-- Griglia elementi -->
+      <div id="items-grid" class="items-grid hidden"></div>
+
+      <!-- Stato vuoto -->
+      <div id="empty-state" class="empty-state hidden">
+        <p style="font-size:2rem;margin-bottom:.5rem;">🎉</p>
+        <p>Tutto è coperto! La festa è al completo.</p>
+        <p style="font-size:.85rem;margin-top:.5rem;color:var(--text-muted);">
+          Se hai cambiato idea su qualcosa che hai scelto, premi "Rimuovi" sulla tua selezione.
+        </p>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="container">
+      <p>Con &hearts; per la notte di San Giovanni</p>
+    </div>
+  </footer>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
