@@ -6,8 +6,8 @@
 //  3. Scegli una password admin sicura
 // ============================================================
 
-const SUPABASE_URL = 'https://IL_TUO_PROGETTO.supabase.co';
-const SUPABASE_ANON_KEY = 'LA_TUA_ANON_KEY';
-const ADMIN_PASSWORD = 'cambia_questa_password';
+const SUPABASE_URL = 'https://fkeofxhadpziafumxlve.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZW9meGhhZHB6aWFmdW14bHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMDA3NjUsImV4cCI6MjA5NTc3Njc2NX0.lo-q79_IaNDVPxs4cgRS4TAYFjhXNUXxbI1PDRIm3rI';
+const ADMIN_PASSWORD = 'Fuochi2026';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
