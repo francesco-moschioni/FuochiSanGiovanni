@@ -34,8 +34,8 @@ function authenticate() {
 // ── Load data ──
 async function loadAdminData() {
   const [{ data: items }, { data: selections }] = await Promise.all([
-    db.from('items').select('*').order('created_at'),
-    db.from('selections').select('*, items(name)').order('created_at'),
+    window.dbClient.from('items').select('*').order('created_at'),
+    window.dbClient.from('selections').select('*, items(name)').order('created_at'),
   ]);
 
   allItems      = items      || [];
@@ -175,9 +175,9 @@ async function saveItem(e) {
   };
 
   if (editingItemId) {
-    await db.from('items').update(payload).eq('id', editingItemId);
+    await window.dbClient.from('items').update(payload).eq('id', editingItemId);
   } else {
-    await db.from('items').insert({ ...payload, is_active: true });
+    await window.dbClient.from('items').insert({ ...payload, is_active: true });
   }
 
   submitBtn.disabled = false;
@@ -187,7 +187,7 @@ async function saveItem(e) {
 
 // ── Toggle active ──
 async function toggleActive(id, current) {
-  await db.from('items').update({ is_active: !current }).eq('id', id);
+  await window.dbClient.from('items').update({ is_active: !current }).eq('id', id);
   loadAdminData();
 }
 
@@ -195,7 +195,7 @@ async function toggleActive(id, current) {
 async function deleteItem(id) {
   const item = allItems.find(i => i.id === id);
   if (!confirm(`Eliminare "${item?.name}"?\nVerranno cancellate anche tutte le iscrizioni per questo elemento.`)) return;
-  await db.from('items').delete().eq('id', id);
+  await window.dbClient.from('items').delete().eq('id', id);
   loadAdminData();
 }
 

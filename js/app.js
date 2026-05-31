@@ -67,8 +67,8 @@ async function showItemsSection() {
 // ── Load data from Supabase ──
 async function loadData() {
   const [{ data: itemsData }, { data: selData }] = await Promise.all([
-    db.from('items').select('*').eq('is_active', true).order('created_at'),
-    db.from('selections').select('item_id, guest_name'),
+    window.dbClient.from('items').select('*').eq('is_active', true).order('created_at'),
+    window.dbClient.from('selections').select('item_id, guest_name'),
   ]);
 
   items = itemsData || [];
@@ -145,7 +145,7 @@ async function toggleItem(itemId, currentlySelected) {
   btn.disabled = true;
 
   if (currentlySelected) {
-    const { error } = await db
+    const { error } = await window.dbClient
       .from('selections')
       .delete()
       .eq('item_id', itemId)
@@ -159,7 +159,7 @@ async function toggleItem(itemId, currentlySelected) {
       }
     }
   } else {
-    const { error } = await db
+    const { error } = await window.dbClient
       .from('selections')
       .insert({ item_id: itemId, guest_name: guestName });
 
@@ -175,7 +175,7 @@ async function toggleItem(itemId, currentlySelected) {
 
 // ── Real-time subscription ──
 function subscribeToChanges() {
-  db.channel('realtime-selections')
+  window.dbClient.channel('realtime-selections')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'selections' }, loadData)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'items' },      loadData)
     .subscribe();
