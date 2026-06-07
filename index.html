@@ -148,14 +148,38 @@
       </div>
     </section>
 
-    <!-- Prenotazioni chiuse -->
-    <section id="closed-section" class="card hidden" style="text-align:center;padding:2.5rem 2rem;">
-      <p style="font-size:2.5rem;margin-bottom:.5rem;">🔒</p>
-      <h2>Prenotazioni prossimamente</h2>
-      <p style="color:var(--text-muted);margin-top:.6rem;line-height:1.7;">
-        La sezione prenotazioni aprirà a breve.<br>
-        Torna a visitare questa pagina nei prossimi giorni!
-      </p>
+    <!-- Conferma presenza -->
+    <section id="confirm-section" class="card hidden">
+
+      <!-- Stato: da confermare -->
+      <div id="confirm-input-state">
+        <h2>Ci sei anche tu? 🔥</h2>
+        <p style="color:var(--text-muted);margin-top:.4rem;line-height:1.7;">
+          Facci sapere che ci sei!<br>
+          Ulteriori informazioni in arrivo nelle prossime settimane.
+        </p>
+        <div class="name-form" style="margin-top:1.25rem;">
+          <input
+            type="text"
+            id="confirm-name-input"
+            placeholder="Il tuo nome"
+            autocomplete="given-name"
+            maxlength="80"
+          />
+          <button id="confirm-presence-btn" class="btn-primary">Ci sono! 🙋</button>
+        </div>
+      </div>
+
+      <!-- Stato: già confermato -->
+      <div id="confirm-done-state" class="hidden" style="text-align:center;padding:.5rem 0;">
+        <p style="font-size:2.5rem;margin-bottom:.5rem;">🔥</p>
+        <h2>Perfetto, <span id="confirm-display-name"></span>!</h2>
+        <p style="color:var(--text-muted);margin-top:.5rem;line-height:1.7;">
+          Ci vediamo alla festa.<br>
+          <span style="font-size:.9rem;">A breve troverai qui altre informazioni.</span>
+        </p>
+      </div>
+
     </section>
 
     <!-- Lista elementi -->

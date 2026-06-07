@@ -34,6 +34,15 @@ CREATE POLICY "sel_public_all"      ON selections FOR ALL    USING (TRUE);
 ALTER PUBLICATION supabase_realtime ADD TABLE items;
 ALTER PUBLICATION supabase_realtime ADD TABLE selections;
 
+-- Tabella conferme di presenza
+CREATE TABLE IF NOT EXISTS confirmations (
+  id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  guest_name TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE confirmations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "conf_public_all" ON confirmations FOR ALL USING (TRUE);
+
 -- Tabella impostazioni globali (es. booking_enabled)
 CREATE TABLE IF NOT EXISTS settings (
   key   TEXT PRIMARY KEY,
