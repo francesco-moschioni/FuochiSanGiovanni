@@ -289,9 +289,15 @@ async function toggleBooking() {
   const btn = document.getElementById('toggle-booking-btn');
   btn.disabled = true;
 
-  await window.dbClient
+  const { error } = await window.dbClient
     .from('settings')
-    .upsert({ key: 'booking_enabled', value: String(!bookingEnabled) });
+    .upsert({ key: 'booking_enabled', value: String(!bookingEnabled) }, { onConflict: 'key' });
+
+  if (error) {
+    console.error('Errore toggle booking:', error);
+    btn.disabled = false;
+    return;
+  }
 
   bookingEnabled = !bookingEnabled;
   updateBookingUI();
