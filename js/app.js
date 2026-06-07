@@ -9,6 +9,7 @@ let mySelections = new Set();
 
 // ── DOM references ──
 const nameSection     = document.getElementById('name-section');
+const closedSection   = document.getElementById('closed-section');
 const itemsSection    = document.getElementById('items-section');
 const guestNameInput  = document.getElementById('guest-name');
 const confirmNameBtn  = document.getElementById('confirm-name-btn');
@@ -18,12 +19,41 @@ const itemsGrid       = document.getElementById('items-grid');
 const emptyState      = document.getElementById('empty-state');
 const loadingEl       = document.getElementById('loading');
 
-// ── Init ──
-if (guestName) {
-  showItemsSection();
-} else {
-  guestNameInput.focus();
+// ── Controlla se le prenotazioni sono aperte ──
+async function checkBookingEnabled() {
+  try {
+    const { data } = await window.dbClient
+      .from('settings')
+      .select('value')
+      .eq('key', 'booking_enabled')
+      .maybeSingle();
+    return !data || data.value === 'true';
+  } catch {
+    return true;
+  }
 }
+
+function showClosedSection() {
+  nameSection.classList.add('hidden');
+  itemsSection.classList.add('hidden');
+  closedSection.classList.remove('hidden');
+}
+
+// ── Init ──
+async function init() {
+  const enabled = await checkBookingEnabled();
+  if (!enabled) {
+    showClosedSection();
+    return;
+  }
+  if (guestName) {
+    showItemsSection();
+  } else {
+    guestNameInput.focus();
+  }
+}
+
+init();
 
 // ── Event listeners ──
 guestNameInput.addEventListener('keypress', e => { if (e.key === 'Enter') confirmName(); });

@@ -33,3 +33,16 @@ CREATE POLICY "sel_public_all"      ON selections FOR ALL    USING (TRUE);
 -- Realtime: abilita aggiornamenti in tempo reale
 ALTER PUBLICATION supabase_realtime ADD TABLE items;
 ALTER PUBLICATION supabase_realtime ADD TABLE selections;
+
+-- Tabella impostazioni globali (es. booking_enabled)
+CREATE TABLE IF NOT EXISTS settings (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL DEFAULT ''
+);
+CREATE POLICY "settings_public_read"  ON settings FOR SELECT USING (TRUE);
+CREATE POLICY "settings_public_write" ON settings FOR ALL    USING (TRUE);
+ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+
+-- Valore iniziale: prenotazioni chiuse (cambiale da admin)
+INSERT INTO settings (key, value) VALUES ('booking_enabled', 'false')
+ON CONFLICT (key) DO NOTHING;

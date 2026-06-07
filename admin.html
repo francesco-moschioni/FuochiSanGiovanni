@@ -49,6 +49,27 @@
 
     <div class="admin-container">
 
+      <!-- Impostazioni -->
+      <div class="table-wrap" style="margin-bottom:2rem;">
+        <div class="table-head">
+          <h2>Impostazioni</h2>
+        </div>
+        <div style="padding:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+          <div>
+            <strong>Schermata prenotazioni</strong>
+            <p style="font-size:.85rem;color:var(--text-muted);margin-top:.25rem;">
+              Quando attiva, gli ospiti possono scegliere cosa portare. Quando chiusa, vedono un messaggio "prossimamente".
+            </p>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;flex-shrink:0;">
+            <span id="booking-status-badge" class="status-badge status-inactive">—</span>
+            <button id="toggle-booking-btn" class="btn-success" onclick="toggleBooking()" disabled>
+              Caricamento&hellip;
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- Statistiche rapide -->
       <div class="stats-grid">
         <div class="stat-card">
