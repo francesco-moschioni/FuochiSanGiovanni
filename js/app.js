@@ -122,7 +122,9 @@ async function showItemsSection() {
   guestNameInput.value = guestName;
   displayNameEl.textContent = guestName;
   nameSection.classList.add('hidden');
+  confirmSection.classList.add('hidden');
   itemsSection.classList.remove('hidden');
+  document.getElementById('album-section').classList.remove('hidden');
   loadingEl.classList.remove('hidden');
   itemsGrid.classList.add('hidden');
 
