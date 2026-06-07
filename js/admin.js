@@ -21,6 +21,7 @@ function authenticate() {
     authOverlay.classList.add('hidden');
     adminContent.classList.remove('hidden');
     loadAdminData();
+    loadBookingStatus();
     setInterval(loadAdminData, 30_000);
   } else {
     loginError.classList.remove('hidden');
@@ -224,6 +225,55 @@ function exportCSV() {
 
 // ── Refresh button ──
 document.getElementById('refresh-btn').addEventListener('click', loadAdminData);
+
+// ── Booking toggle ──
+let bookingEnabled = false;
+
+async function loadBookingStatus() {
+  const { data } = await window.dbClient
+    .from('settings')
+    .select('value')
+    .eq('key', 'booking_enabled')
+    .maybeSingle();
+
+  bookingEnabled = data?.value === 'true';
+  updateBookingUI();
+}
+
+function updateBookingUI() {
+  const badge = document.getElementById('booking-status-badge');
+  const btn   = document.getElementById('toggle-booking-btn');
+  if (!badge || !btn) return;
+
+  btn.disabled = false;
+  if (bookingEnabled) {
+    badge.textContent = 'Attive';
+    badge.className   = 'status-badge status-open';
+    btn.textContent   = 'Chiudi prenotazioni';
+    btn.className     = 'btn-outline';
+    btn.style.color   = 'var(--danger)';
+    btn.style.borderColor = 'var(--danger)';
+  } else {
+    badge.textContent = 'Chiuse';
+    badge.className   = 'status-badge status-inactive';
+    btn.textContent   = 'Apri prenotazioni';
+    btn.className     = 'btn-success';
+    btn.style.color   = '';
+    btn.style.borderColor = '';
+  }
+}
+
+async function toggleBooking() {
+  const btn = document.getElementById('toggle-booking-btn');
+  btn.disabled = true;
+
+  await window.dbClient
+    .from('settings')
+    .upsert({ key: 'booking_enabled', value: String(!bookingEnabled) });
+
+  bookingEnabled = !bookingEnabled;
+  updateBookingUI();
+}
 
 // ── Utils ──
 function esc(text) {
