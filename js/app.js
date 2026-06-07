@@ -2,22 +2,25 @@
 //  Pagina ospiti — Fuochi di San Giovanni
 // ============================================================
 
-let guestName = localStorage.getItem('guestName') || '';
+let guestName     = localStorage.getItem('guestName')     || '';
+let confirmedName = localStorage.getItem('confirmedName') || '';
 let items = [];
 let selectionsMap = {};   // item_id → [guest_name, ...]
 let mySelections = new Set();
 
 // ── DOM references ──
-const nameSection     = document.getElementById('name-section');
-const closedSection   = document.getElementById('closed-section');
-const itemsSection    = document.getElementById('items-section');
-const guestNameInput  = document.getElementById('guest-name');
-const confirmNameBtn  = document.getElementById('confirm-name-btn');
-const changeNameBtn   = document.getElementById('change-name-btn');
-const displayNameEl   = document.getElementById('display-name');
-const itemsGrid       = document.getElementById('items-grid');
-const emptyState      = document.getElementById('empty-state');
-const loadingEl       = document.getElementById('loading');
+const nameSection        = document.getElementById('name-section');
+const confirmSection     = document.getElementById('confirm-section');
+const itemsSection       = document.getElementById('items-section');
+const guestNameInput     = document.getElementById('guest-name');
+const confirmNameBtn     = document.getElementById('confirm-name-btn');
+const changeNameBtn      = document.getElementById('change-name-btn');
+const displayNameEl      = document.getElementById('display-name');
+const itemsGrid          = document.getElementById('items-grid');
+const emptyState         = document.getElementById('empty-state');
+const loadingEl          = document.getElementById('loading');
+const confirmNameInput   = document.getElementById('confirm-name-input');
+const confirmPresenceBtn = document.getElementById('confirm-presence-btn');
 
 // ── Controlla se le prenotazioni sono aperte ──
 async function checkBookingEnabled() {
@@ -33,22 +36,52 @@ async function checkBookingEnabled() {
   }
 }
 
-function showClosedSection() {
+// ── Conferma presenza ──
+function showConfirmSection() {
   nameSection.classList.add('hidden');
   itemsSection.classList.add('hidden');
-  closedSection.classList.remove('hidden');
+  confirmSection.classList.remove('hidden');
+  if (confirmedName) {
+    showConfirmedState(confirmedName);
+  } else {
+    if (guestName) confirmNameInput.value = guestName;
+    setTimeout(() => confirmNameInput.focus(), 50);
+  }
+}
+
+function showConfirmedState(name) {
+  document.getElementById('confirm-input-state').classList.add('hidden');
+  document.getElementById('confirm-done-state').classList.remove('hidden');
+  document.getElementById('confirm-display-name').textContent = name;
+}
+
+async function confirmPresence() {
+  const name = confirmNameInput.value.trim();
+  if (!name) {
+    confirmNameInput.classList.add('shake');
+    setTimeout(() => confirmNameInput.classList.remove('shake'), 500);
+    return;
+  }
+  confirmPresenceBtn.disabled = true;
+  await window.dbClient
+    .from('confirmations')
+    .upsert({ guest_name: name }, { onConflict: 'guest_name' });
+  confirmedName = name;
+  localStorage.setItem('confirmedName', name);
+  showConfirmedState(name);
 }
 
 // ── Init ──
 async function init() {
   const enabled = await checkBookingEnabled();
   if (!enabled) {
-    showClosedSection();
+    showConfirmSection();
     return;
   }
   if (guestName) {
     showItemsSection();
   } else {
+    if (confirmedName) guestNameInput.value = confirmedName;
     guestNameInput.focus();
   }
 }
@@ -56,6 +89,9 @@ async function init() {
 init();
 
 // ── Event listeners ──
+confirmPresenceBtn.addEventListener('click', confirmPresence);
+confirmNameInput.addEventListener('keypress', e => { if (e.key === 'Enter') confirmPresence(); });
+
 guestNameInput.addEventListener('keypress', e => { if (e.key === 'Enter') confirmName(); });
 confirmNameBtn.addEventListener('click', confirmName);
 

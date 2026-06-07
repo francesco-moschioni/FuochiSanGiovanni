@@ -2,8 +2,9 @@
 //  Pagina admin — Fuochi di San Giovanni
 // ============================================================
 
-let allItems      = [];
-let allSelections = [];
+let allItems         = [];
+let allSelections    = [];
+let allConfirmations = [];
 let editingItemId = null;
 
 // ── Auth ──
@@ -34,17 +35,20 @@ function authenticate() {
 
 // ── Load data ──
 async function loadAdminData() {
-  const [{ data: items }, { data: selections }] = await Promise.all([
+  const [{ data: items }, { data: selections }, { data: confirmations }] = await Promise.all([
     window.dbClient.from('items').select('*').order('created_at'),
     window.dbClient.from('selections').select('*, items(name)').order('created_at'),
+    window.dbClient.from('confirmations').select('*').order('created_at'),
   ]);
 
-  allItems      = items      || [];
-  allSelections = selections || [];
+  allItems         = items         || [];
+  allSelections    = selections    || [];
+  allConfirmations = confirmations || [];
 
   renderStats();
   renderItemsTable();
   renderGuestList();
+  renderConfirmations();
 }
 
 // ── Stats ──
@@ -56,10 +60,11 @@ function renderStats() {
   }).length;
   const guests = new Set(allSelections.map(s => s.guest_name)).size;
 
-  document.getElementById('stat-items').textContent   = active;
-  document.getElementById('stat-covered').textContent = covered;
-  document.getElementById('stat-guests').textContent  = guests;
-  document.getElementById('stat-total').textContent   = allSelections.length;
+  document.getElementById('stat-items').textContent     = active;
+  document.getElementById('stat-covered').textContent   = covered;
+  document.getElementById('stat-guests').textContent    = guests;
+  document.getElementById('stat-total').textContent     = allSelections.length;
+  document.getElementById('stat-confirmed').textContent = allConfirmations.length;
 }
 
 // ── Items table ──
@@ -225,6 +230,23 @@ function exportCSV() {
 
 // ── Refresh button ──
 document.getElementById('refresh-btn').addEventListener('click', loadAdminData);
+
+// ── Confirmations list ──
+function renderConfirmations() {
+  const container = document.getElementById('confirmations-list');
+  if (allConfirmations.length === 0) {
+    container.innerHTML = '<p class="muted">Nessuna presenza confermata ancora.</p>';
+    return;
+  }
+  container.innerHTML = `<div class="guest-grid">` +
+    allConfirmations.map(c => `
+      <div class="guest-card">
+        <strong>${esc(c.guest_name)}</strong>
+        <span>${new Date(c.created_at).toLocaleDateString('it-IT', { day:'numeric', month:'long' })}</span>
+      </div>
+    `).join('') +
+  `</div>`;
+}
 
 // ── Booking toggle ──
 let bookingEnabled = false;

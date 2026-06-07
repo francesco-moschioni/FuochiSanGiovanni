@@ -56,9 +56,9 @@
         </div>
         <div style="padding:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
           <div>
-            <strong>Schermata prenotazioni</strong>
+            <strong>Chi porta cosa</strong>
             <p style="font-size:.85rem;color:var(--text-muted);margin-top:.25rem;">
-              Quando attiva, gli ospiti possono scegliere cosa portare. Quando chiusa, vedono un messaggio "prossimamente".
+              Quando attiva, gli ospiti possono scegliere cosa portare alla festa. Quando chiusa, vedono solo la card di conferma presenza.
             </p>
           </div>
           <div style="display:flex;align-items:center;gap:.75rem;flex-shrink:0;">
@@ -87,6 +87,10 @@
         <div class="stat-card">
           <div class="stat-number" id="stat-total">—</div>
           <div class="stat-label">Iscrizioni totali</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-confirmed">—</div>
+          <div class="stat-label">Presenze confermate</div>
         </div>
       </div>
 
@@ -118,9 +122,19 @@
       <!-- Lista ospiti -->
       <div class="table-wrap">
         <div class="table-head">
-          <h2>Ospiti</h2>
+          <h2>Ospiti — Chi porta cosa</h2>
         </div>
         <div id="guest-list">
+          <p class="muted">Caricamento&hellip;</p>
+        </div>
+      </div>
+
+      <!-- Presenze confermate -->
+      <div class="table-wrap">
+        <div class="table-head">
+          <h2>Presenze confermate</h2>
+        </div>
+        <div id="confirmations-list">
           <p class="muted">Caricamento&hellip;</p>
         </div>
       </div>
