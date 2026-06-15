@@ -89,7 +89,7 @@ async function showItemsSection() {
   itemsSection.classList.remove('hidden');
   loadingEl.classList.remove('hidden');
   itemsGrid.classList.add('hidden');
-  altroCard.classList.add('hidden');
+  altroCard?.classList.add('hidden');
 
   await loadData();
   subscribeToChanges();
@@ -97,12 +97,14 @@ async function showItemsSection() {
 
 // ── Load data from Supabase ──
 async function loadData() {
-  const [{ data: itemsData }, { data: selData }, { data: otherData }, { data: commentData }] = await Promise.all([
+  const [{ data: itemsData }, { data: selData }] = await Promise.all([
     window.dbClient.from('items').select('*').eq('is_active', true).order('created_at'),
     window.dbClient.from('selections').select('item_id, guest_name'),
-    window.dbClient.from('other_items').select('*').order('created_at'),
-    window.dbClient.from('comments').select('content').eq('guest_name', guestName).maybeSingle(),
   ]);
+
+  // Tabelle opzionali: gestite separatamente per evitare blocchi se non ancora create
+  const { data: otherData }   = await window.dbClient.from('other_items').select('*').order('created_at');
+  const { data: commentData } = await window.dbClient.from('comments').select('content').eq('guest_name', guestName).maybeSingle();
 
   items       = itemsData  || [];
   otherItems  = otherData  || [];
@@ -133,7 +135,7 @@ async function loadData() {
 function renderItems() {
   loadingEl.classList.add('hidden');
   itemsGrid.classList.remove('hidden');
-  altroCard.classList.remove('hidden');
+  altroCard?.classList.remove('hidden');
 
   const visible = items.filter(item => {
     const count  = (selectionsMap[item.id] || []).length;
@@ -150,7 +152,6 @@ function renderItems() {
       const count      = (selectionsMap[item.id] || []).length;
       const isFull     = count >= item.quantity_needed;
       const isSelected = mySelections.has(item.id);
-      const pct        = Math.min(100, Math.round((count / item.quantity_needed) * 100));
 
       return `
         <div class="item-card ${isSelected ? 'selected' : ''} ${isFull && !isSelected ? 'full' : ''}">
@@ -158,12 +159,8 @@ function renderItems() {
             <h3 class="item-name">${esc(item.name)}</h3>
             ${item.description ? `<p class="item-desc">${esc(item.description)}</p>` : ''}
             <div class="item-meta">
-              <span class="item-count">${count} / ${item.quantity_needed}</span>
               ${isSelected ? '<span class="badge badge-mine">Tu porti questo ✓</span>' : ''}
               ${isFull && !isSelected ? '<span class="badge badge-full">Già coperto</span>' : ''}
-            </div>
-            <div class="progress-bar" aria-hidden="true">
-              <div class="progress-fill ${isFull ? 'full' : ''}" style="width:${pct}%"></div>
             </div>
           </div>
           ${(!isFull || isSelected) ? `
