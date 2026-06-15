@@ -129,19 +129,18 @@
   <!-- ── Main ── -->
   <main class="container">
 
-    <!-- Inserimento cognome -->
+    <!-- Inserimento nome -->
     <section id="name-section" class="card">
       <h2>Benvenuto alla festa! 🎉</h2>
       <p style="color:var(--text-muted);margin-top:.4rem;line-height:1.7;">
-        Siamo felici di averti con noi per la notte più magica del lago.<br>
-        Inserisci il tuo <strong>cognome</strong> e scopri cosa puoi portare.
+        Inserisci il tuo nome e cosa potresti portare.
       </p>
       <div class="name-form" style="margin-top:1.25rem;">
         <input
           type="text"
           id="guest-name"
-          placeholder="Il tuo cognome"
-          autocomplete="family-name"
+          placeholder="Il tuo nome"
+          autocomplete="given-name"
           maxlength="80"
         />
         <button id="confirm-name-btn" class="btn-primary">Continua &rarr;</button>
@@ -172,12 +171,34 @@
 
       <div id="items-grid" class="items-grid hidden"></div>
 
+      <!-- Card "Altro" -->
+      <div id="altro-card" class="hidden" style="margin-top:1rem;"></div>
+
       <div id="empty-state" class="empty-state hidden">
         <p style="font-size:2rem;margin-bottom:.5rem;">🎉</p>
         <p>Tutto è coperto! La festa è al completo.</p>
         <p style="font-size:.85rem;margin-top:.5rem;color:var(--text-muted);">
           Se hai cambiato idea, premi "Rimuovi" sulla tua selezione.
         </p>
+      </div>
+
+      <!-- Box commento -->
+      <div id="comment-section" class="hidden" style="margin-top:1.5rem;">
+        <div class="card">
+          <h3 style="font-size:1rem;margin-bottom:.75rem;">💬 Lascia un commento</h3>
+          <textarea
+            id="comment-textarea"
+            placeholder="Scrivi qualcosa per gli organizzatori..."
+            maxlength="500"
+            style="width:100%;padding:.75rem;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.9rem;font-family:inherit;resize:vertical;outline:none;min-height:90px;transition:border-color .18s ease;"
+            onfocus="this.style.borderColor='var(--blue-mid)'"
+            onblur="this.style.borderColor='var(--border)'"
+          ></textarea>
+          <div style="display:flex;align-items:center;justify-content:flex-end;gap:.75rem;margin-top:.6rem;">
+            <span id="comment-saved-msg" class="hidden" style="font-size:.85rem;color:var(--success);">✓ Salvato!</span>
+            <button class="btn-primary" style="padding:.6rem 1.25rem;font-size:.9rem;" onclick="saveComment()">Salva</button>
+          </div>
+        </div>
       </div>
 
     </section>
@@ -206,7 +227,7 @@
       <h2>Album della festa</h2>
       <p>Aggiungi le tue foto e rivivi i momenti più belli della notte di San Giovanni.</p>
       <a href="https://photos.app.goo.gl/ofLWH58J5Y4Sdd3q8" target="_blank" rel="noopener" class="btn-album">
-        📷 &nbsp;Apri e aggiungi foto
+        📷 &nbsp;Aggiungi qui le tue foto!
       </a>
     </div>
 

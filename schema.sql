@@ -55,3 +55,24 @@ ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
 -- Valore iniziale: prenotazioni chiuse (cambiale da admin)
 INSERT INTO settings (key, value) VALUES ('booking_enabled', 'false')
 ON CONFLICT (key) DO NOTHING;
+
+-- Tabella "Altro": cosa vuole portare ogni ospite (libero)
+CREATE TABLE IF NOT EXISTS other_items (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  guest_name  TEXT NOT NULL UNIQUE,
+  description TEXT NOT NULL,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE other_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "other_items_public_all" ON other_items FOR ALL USING (TRUE);
+ALTER PUBLICATION supabase_realtime ADD TABLE other_items;
+
+-- Tabella commenti ospiti
+CREATE TABLE IF NOT EXISTS comments (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  guest_name  TEXT NOT NULL UNIQUE,
+  content     TEXT NOT NULL,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "comments_public_all" ON comments FOR ALL USING (TRUE);
