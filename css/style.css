@@ -550,6 +550,17 @@ td.actions { white-space: nowrap; }
 .btn-outline:hover { border-color: var(--text-muted); }
 
 /* ── Responsive ── */
+@media (max-width: 640px) {
+  .card { padding: 1.5rem 1.25rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .guest-grid { grid-template-columns: 1fr; }
+  .modal-box  { padding: 1.5rem 1.25rem; }
+  .admin-header { padding: 1rem; }
+  .admin-header h1 { font-size: 1.1rem; }
+  .admin-actions .btn-success,
+  .admin-actions .btn-secondary { padding: .45rem .85rem; font-size: .82rem; }
+}
+
 @media (max-width: 520px) {
   .items-grid { grid-template-columns: 1fr; }
   .name-form   { flex-direction: column; }
@@ -557,4 +568,49 @@ td.actions { white-space: nowrap; }
   .welcome-banner { font-size: .875rem; }
   table { font-size: .8rem; }
   th, td { padding: .6rem .75rem; }
+}
+
+@media (max-width: 380px) {
+  html { font-size: 15px; }
+  .card { padding: 1.25rem 1rem; }
+  .stat-number { font-size: 1.8rem; }
+  .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Dark mode ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:        #0F1923;
+    --white:     #1A2733;
+    --text:      #E4F0FA;
+    --text-muted:#7FA8C4;
+    --border:    #263C52;
+    --blue-pale: #16283A;
+    --shadow:    0 2px 16px rgba(0,0,0,.4);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.55);
+  }
+
+  td { border-bottom-color: #1F3044; }
+
+  .item-card.selected {
+    background: linear-gradient(135deg, #16283A 0%, #1A2733 100%);
+  }
+
+  .badge-mine { background: #163350; color: var(--blue-light); }
+  .badge-full { background: #3D1A12; color: #F4A78C; }
+
+  .btn-remove:hover { background: #3D1212; }
+
+  .status-full     { background: #163350; color: var(--blue-light); }
+  .status-open     { background: #0E3322; color: #5EC98A; }
+  .status-inactive { background: #1F2D3A; color: var(--text-muted); }
+
+  .btn-sm.btn-danger:hover { background: #3D1212; border-color: #7B2020; }
+
+  .modal-overlay { background: rgba(0,0,0,.6); }
+
+  .name-form input,
+  .form-group input,
+  .form-group textarea,
+  .auth-box input { background: var(--bg); color: var(--text); }
 }
