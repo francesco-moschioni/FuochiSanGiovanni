@@ -6,8 +6,6 @@ let guestName    = localStorage.getItem('guestName') || '';
 let items        = [];
 let selectionsMap = {};
 let mySelections  = new Set();
-let otherItems    = [];
-let myOtherItem   = null;
 let commentLoaded = false;
 
 // ── DOM references ──
@@ -19,7 +17,6 @@ const confirmNameBtn = document.getElementById('confirm-name-btn');
 const changeNameBtn  = document.getElementById('change-name-btn');
 const displayNameEl  = document.getElementById('display-name');
 const itemsGrid      = document.getElementById('items-grid');
-const altroCard      = document.getElementById('altro-card');
 const emptyState     = document.getElementById('empty-state');
 const loadingEl      = document.getElementById('loading');
 
@@ -89,7 +86,6 @@ async function showItemsSection() {
   itemsSection.classList.remove('hidden');
   loadingEl.classList.remove('hidden');
   itemsGrid.classList.add('hidden');
-  altroCard?.classList.add('hidden');
 
   await loadData();
   subscribeToChanges();
@@ -102,13 +98,9 @@ async function loadData() {
     window.dbClient.from('selections').select('item_id, guest_name'),
   ]);
 
-  // Tabelle opzionali: gestite separatamente per evitare blocchi se non ancora create
-  const { data: otherData }   = await window.dbClient.from('other_items').select('*').order('created_at');
   const { data: commentData } = await window.dbClient.from('comments').select('content').eq('guest_name', guestName).maybeSingle();
 
-  items       = itemsData  || [];
-  otherItems  = otherData  || [];
-  myOtherItem = otherItems.find(o => o.guest_name.toLowerCase() === guestName.toLowerCase()) || null;
+  items = itemsData || [];
 
   selectionsMap = {};
   mySelections  = new Set();
@@ -135,7 +127,6 @@ async function loadData() {
 function renderItems() {
   loadingEl.classList.add('hidden');
   itemsGrid.classList.remove('hidden');
-  altroCard?.classList.remove('hidden');
 
   const visible = items.filter(item => {
     const count  = (selectionsMap[item.id] || []).length;
@@ -174,66 +165,6 @@ function renderItems() {
       `;
     }).join('');
   }
-
-  renderAltroCard();
-}
-
-// ── Render card "Altro" ──
-function renderAltroCard() {
-  const others = otherItems.filter(o => o.guest_name.toLowerCase() !== guestName.toLowerCase());
-  const desc = others.map(o => `<strong>${esc(o.guest_name)}</strong>: ${esc(o.description)}`).join(' &middot; ');
-
-  altroCard.innerHTML = `
-    <div class="item-card ${myOtherItem ? 'selected' : ''}">
-      <div class="item-content">
-        <h3 class="item-name">Altro</h3>
-        ${desc ? `<p class="item-desc" style="margin-top:.35rem;">${desc}</p>` : ''}
-        ${myOtherItem ? `
-          <div class="item-meta" style="margin-top:.5rem;">
-            <span class="badge badge-mine">Tu porti: ${esc(myOtherItem.description)} ✓</span>
-          </div>` : ''}
-      </div>
-      ${myOtherItem
-        ? `<button class="item-btn btn-remove" onclick="removeOtherItem()">Rimuovi</button>`
-        : `<div style="display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem;">
-            <input
-              type="text" id="other-item-input"
-              placeholder="Es. torta, chitarra, sdraio..."
-              maxlength="120"
-              style="padding:.55rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;transition:border-color .18s ease;"
-              onfocus="this.style.borderColor='var(--blue-mid)'"
-              onblur="this.style.borderColor='var(--border)'"
-              onkeypress="if(event.key==='Enter') saveOtherItem()"
-            />
-            <button class="item-btn btn-add" onclick="saveOtherItem()">Aggiungo io!</button>
-          </div>`
-      }
-    </div>
-  `;
-}
-
-// ── Salva "Altro" ──
-async function saveOtherItem() {
-  const input = document.getElementById('other-item-input');
-  const desc  = input?.value.trim();
-  if (!desc) {
-    input?.classList.add('shake');
-    setTimeout(() => input?.classList.remove('shake'), 500);
-    return;
-  }
-  await window.dbClient
-    .from('other_items')
-    .upsert({ guest_name: guestName, description: desc }, { onConflict: 'guest_name' });
-  await loadData();
-}
-
-// ── Rimuovi "Altro" ──
-async function removeOtherItem() {
-  await window.dbClient
-    .from('other_items')
-    .delete()
-    .ilike('guest_name', guestName);
-  await loadData();
 }
 
 // ── Salva commento ──
@@ -288,9 +219,8 @@ async function toggleItem(itemId, currentlySelected) {
 // ── Real-time subscription ──
 function subscribeToChanges() {
   window.dbClient.channel('realtime-selections')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'selections' },  loadData)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'items' },       loadData)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'other_items' }, loadData)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'selections' }, loadData)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'items' },      loadData)
     .subscribe();
 }
 
