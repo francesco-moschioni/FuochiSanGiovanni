@@ -22,11 +22,6 @@
   />
   <link rel="stylesheet" href="css/style.css?v=5" />
   <style>
-    /* ── Progress bar ── */
-    .progress-bar  { height:4px; background:var(--border); border-radius:99px; margin-top:.75rem; overflow:hidden; }
-    .progress-fill { height:100%; background:var(--blue-mid); border-radius:99px; transition:width .4s ease; }
-    .progress-fill.full { background:var(--accent); }
-
     /* ── Hero ── */
     .hero {
       position: relative;
@@ -77,16 +72,13 @@
       gap: .6rem .2rem;
       align-items: center;
     }
-    .hero-meta a, .hero-meta span {
+    .hero-meta span {
       color: rgba(255,255,255,.88);
       font-size: .9rem;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: .3rem;
     }
-    .hero-meta a:hover { color: #fff; text-decoration: underline; }
-    .hero-meta .sep { color: rgba(255,255,255,.4); }
 
     /* ── Album section ── */
     .album-section {
@@ -128,10 +120,6 @@
       <h1>Lido Silvia</h1>
       <div class="hero-meta">
         <span>📅 27 Giugno 2026</span>
-        <span class="sep">·</span>
-        <a href="https://maps.app.goo.gl/JtLzqNTZrVQEM9uW9" target="_blank" rel="noopener">
-          📍 Come arrivare
-        </a>
       </div>
     </div>
   </div>
@@ -139,93 +127,13 @@
   <!-- ── Main ── -->
   <main class="container">
 
-    <!-- Inserimento nome -->
-    <section id="name-section" class="card">
-      <h2>Benvenuto alla festa! 🎉</h2>
-      <p style="color:var(--text-muted);margin-top:.4rem;line-height:1.7;">
-        Inserisci il tuo nome e cosa potresti portare.
+    <!-- Ringraziamenti -->
+    <div class="card" style="margin-top:2rem;text-align:center;padding:2.5rem 2rem;">
+      <p style="font-size:2.5rem;margin-bottom:.75rem;">🌊✨</p>
+      <h2>Grazie per la serata speciale!</h2>
+      <p style="color:var(--text-muted);margin-top:.75rem;line-height:1.8;font-size:1rem;">
+        È stata una notte bellissima. Grazie a tutti per esserci stati e per aver reso questa serata indimenticabile.
       </p>
-      <div class="name-form" style="margin-top:1.25rem;">
-        <input
-          type="text"
-          id="guest-name"
-          placeholder="Il tuo nome"
-          autocomplete="given-name"
-          maxlength="80"
-        />
-        <button id="confirm-name-btn" class="btn-primary">Continua &rarr;</button>
-      </div>
-    </section>
-
-    <!-- Lista in arrivo -->
-    <section id="closed-section" class="card hidden" style="text-align:center;padding:2rem;">
-      <p style="font-size:2rem;margin-bottom:.5rem;">🔥</p>
-      <h2>A breve!</h2>
-      <p style="color:var(--text-muted);margin-top:.5rem;line-height:1.7;">
-        Ulteriori informazioni in arrivo nelle prossime settimane.
-      </p>
-    </section>
-
-    <!-- Lista elementi -->
-    <section id="items-section" class="hidden">
-
-      <div class="welcome-banner">
-        <span>Ciao, <strong id="display-name"></strong>! Cosa vuoi portare?</span>
-        <button id="change-name-btn" class="btn-link">Cambia nome</button>
-      </div>
-
-      <div id="loading" class="loading">
-        <div class="spinner"></div>
-        <p>Caricamento in corso&hellip;</p>
-      </div>
-
-      <div id="items-grid" class="items-grid hidden"></div>
-
-      <div id="empty-state" class="empty-state hidden">
-        <p style="font-size:2rem;margin-bottom:.5rem;">🎉</p>
-        <p>Tutto è coperto! La festa è al completo.</p>
-        <p style="font-size:.85rem;margin-top:.5rem;color:var(--text-muted);">
-          Se hai cambiato idea, premi "Rimuovi" sulla tua selezione.
-        </p>
-      </div>
-
-      <!-- Box commento -->
-      <div id="comment-section" class="hidden" style="margin-top:1.5rem;">
-        <div class="card">
-          <h3 style="font-size:1rem;margin-bottom:.75rem;">💬 Lascia un commento</h3>
-          <textarea
-            id="comment-textarea"
-            placeholder="Scrivi qualcosa per gli organizzatori..."
-            maxlength="500"
-            style="width:100%;padding:.75rem;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.9rem;font-family:inherit;resize:vertical;outline:none;min-height:90px;transition:border-color .18s ease;"
-            onfocus="this.style.borderColor='var(--blue-mid)'"
-            onblur="this.style.borderColor='var(--border)'"
-          ></textarea>
-          <div style="display:flex;align-items:center;justify-content:flex-end;gap:.75rem;margin-top:.6rem;">
-            <span id="comment-saved-msg" class="hidden" style="font-size:.85rem;color:var(--success);">✓ Salvato!</span>
-            <button class="btn-primary" style="padding:.6rem 1.25rem;font-size:.9rem;" onclick="saveComment()">Salva</button>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ── Informazioni sui pass ── -->
-    <div class="card" style="margin-top:2rem;">
-      <p style="font-size:1.5rem;margin-bottom:.4rem;">🎫</p>
-      <h2>Informazioni sui pass</h2>
-      <p style="color:var(--text-muted);margin-top:.4rem;line-height:1.7;font-size:.95rem;">
-        Sul sito del Comune di Tremezzina trovi tutte le informazioni aggiornate su pass, parcheggi e accesso alla zona per la festa.
-      </p>
-      <a
-        href="https://www.comune.tremezzina.co.it/novita/notizie/novita_313.html"
-        target="_blank"
-        rel="noopener"
-        class="btn-primary"
-        style="display:inline-flex;align-items:center;gap:.5rem;margin-top:1.25rem;text-decoration:none;"
-      >
-        🔗 &nbsp;Leggi le informazioni sui pass
-      </a>
     </div>
 
     <!-- ── Album Google Foto ── -->
@@ -250,8 +158,5 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=4"></script>
-  <script src="js/app.js?v=6"></script>
 </body>
 </html>
